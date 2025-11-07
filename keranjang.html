@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang Belanja - Zass Desuta</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4a6cfa;
+            --secondary: #ff6b6b;
+            --accent: #4ecdc4;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --info: #0984e3;
+            
+            /* Light Mode Variables */
+            --bg-color: #f5f7ff;
+            --card-bg: #ffffff;
+            --text-color: #2d3436;
+            --text-secondary: #636e72;
+            --border-color: #dfe6e9;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            
+            --header-bg: linear-gradient(135deg, var(--primary), #6c5ce7);
+            --footer-bg: #2d3436;
+            --footer-text: #f8f9fa;
+            
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        /* Dark Mode Variables */
+        [data-theme="dark"] {
+            --bg-color: #1a1d21;
+            --card-bg: #2d3436;
+            --text-color: #f8f9fa;
+            --text-secondary: #b2bec3;
+            --border-color: #636e72;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            
+            --header-bg: linear-gradient(135deg, #2d3436, #1a1d21);
+            --footer-bg: #1a1d21;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        /* Header */
+        .cart-header {
+            background: var(--header-bg);
+            color: white;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .cart-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+        }
+
+        .search-button {
+            padding: 0 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Cart Items */
+        .cart-items {
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .cart-item-image {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 15px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-variant {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: var(--card-bg);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .quantity-input {
+            width: 40px;
+            height: 30px;
+            border: none;
+            text-align: center;
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .remove-item {
+            color: var(--secondary);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* Cart Summary */
+        .cart-summary {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover {
+            background: #3a5be0;
+            transform: translateY(-2px);
+        }
+
+        /* Empty Cart */
+        .empty-cart {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Payment Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--secondary);
+            transform: rotate(90deg);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Payment Methods */
+        .payment-methods {
+            margin-bottom: 25px;
+        }
+
+        .payment-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .payment-option {
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary);
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary);
+            background: rgba(74, 108, 250, 0.1);
+        }
+
+        .payment-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .payment-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .payment-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        /* Payment Details */
+        .payment-details {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        [data-theme="dark"] .payment-details {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .payment-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .payment-amount {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .copy-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #3a5be0;
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+        }
+
+        .continue-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .continue-btn:hover {
+            background: #00a382;
+        }
+
+        .disclaimer {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 40px 0 20px;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .footer-section p {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .footer-section a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: var(--transition);
+            display: block;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideUp 0.3s, fadeOut 0.5s 2.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Card Badge */
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--secondary);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 90;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .cart-item-image {
+                margin-bottom: 10px;
+            }
+            
+            .cart-item-controls {
+                width: 100%;
+                justify-content: space-between;
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-content {
+                margin: 20px auto;
+                padding: 20px 15px;
+            }
+        }
+    </style>
+    <meta name="description" content="Temukan berbagai produk digital dengan harga pelajar.">
+    <meta name="keywords" content="zass desuta, marketplace, jualan murah, gratis ongkir">
+    <meta property="og:title" content="Zass Desuta || Keranjang Belanja">
+    <meta property="og:description" content="Temukan berbagai produk digital dengan harga pelajar.">
+    <meta property="og:image" content="img/favicon.png">
+    <meta property="og:url" content="https://marketplace.zass.cloud/keranjang">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/keranjang.css"> 
+</head>
+<body>
+    <header class="cart-header">
+        <div class="container">
+            <div class="cart-header-content">
+                <a href="index.html" class="back-button" aria-label="Kembali ke halaman utama">
+                    <i class="fas fa-arrow-left"></i>
+                    Kembali
+                </a>
+                <h1>Keranjang Belanja</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="Cari produk di keranjang..." aria-label="Cari produk di keranjang">
+                <button class="search-button" aria-label="Tombol cari">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="cart-items" id="cartItems" role="region" aria-live="polite">
+            </div>
+
+        <div class="cart-summary" role="complementary">
+            <h3 class="section-title">Ringkasan Belanja</h3>
+            <div class="summary-item">
+                <span>Subtotal</span>
+                <span id="subtotal">Rp 0</span>
+            </div>
+            <div class="summary-item">
+                <span>Ongkos Kirim</span>
+                <span>Gratis</span>
+            </div>
+            <div class="summary-total">
+                <span>Total</span>
+                <span id="total">Rp 0</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn" disabled aria-disabled="true">Lanjut ke Pembayaran</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Tentang Kami</h3>
+                    <p id="aboutText"></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Kontak Kami</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="alamat"></span></p>
+                    <p><i class="fas fa-phone"></i> <span id="wa"></span></p>
+                    <p><i class="fas fa-envelope"></i> <span id="email"></span></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Link Cepat</h3>
+                    <a href="index.html">Beranda</a>
+                    <a href="search.html">Cari</a>
+                    <a href="keranjang.html" aria-current="page">Keranjang</a>
+                    <a href="profil.html">Profil</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Ikuti Kami</h3>
+                    <div class="social-icons">
+                        <a id="ytLink" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a id="tiktokLink" target="_blank" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                        <a id="waLink" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a id="telegramLink" target="_blank" aria-label="Telegram"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Zass Desuta. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" style="display: none;">
+        <div class="modal-content">
+            <button class="close-modal" id="closeModal" aria-label="Tutup Modal Pembayaran">&times;</button>
+            <h2 class="modal-title" id="modalTitle">Pembayaran</h2>
+            
+            <div class="payment-details">
+                <div class="payment-info">
+                    <span>Invoice ID:</span>
+                    <span id="invoiceId">ZPAY-123456</span>
+                </div>
+                <div class="payment-info">
+                    <span>Tanggal:</span>
+                    <span id="invoiceDate">1 Sep 2025</span>
+                </div>
+                <div class="payment-info">
+                    <span>Status:</span>
+                    <span style="color: var(--warning);">Menunggu Pembayaran</span>
+                </div>
+            </div>
+            
+            <div class="payment-methods">
+                <h3 class="payment-title">Pilih Metode Pembayaran</h3>
+                <div class="payment-options" role="radiogroup" aria-label="Pilih Metode Pembayaran">
+                    <div class="payment-option" data-method="dana" data-number="" role="radio" tabindex="0" aria-checked="false">
+                        <div class="payment-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="payment-name">DANA</div>
+                        <div class="payment-desc">Transfer Dana</div>
+                    </div>
+                    <div class="payment-option" data-method="gopay" data-number="" role="radio" tabindex="0" aria-checked="false">
+                        <div class="payment-icon"><i class="fas fa-money-bill-wave"></i></div>
+                        <div class="payment-name">GoPay</div>
+                        <div class="payment-desc">GoJek Indonesia</div>
+                    </div>
+                    <div class="payment-option" data-method="ovo" data-number="" role="radio" tabindex="0" aria-checked="false">
+                        <div class="payment-icon"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="payment-name">OVO</div>
+                        <div class="payment-desc">OVO Payment</div>
+                    </div>
+                    <div class="payment-option" data-method="qris" data-number="" role="radio" tabindex="0" aria-checked="false">
+                        <div class="payment-icon"><i class="fas fa-qrcode"></i></div>
+                        <div class="payment-name">QRIS</div>
+                        <div class="payment-desc">Scan QR Code</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="payment-details" id="selectedPaymentDetails" style="display: none;">
+                <h4 class="payment-title" id="selectedMethodTitle">Metode Pembayaran</h4>
+                <div class="payment-info">
+                    <span>Nomor/URL:</span>
+                    <span id="paymentNumber"></span>
+                </div>
+                <div class="payment-amount" id="paymentAmount">Rp 0</div>
+                <button class="copy-btn" id="copyBtn" aria-label="Salin Nomor Pembayaran">Salin Nomor Pembayaran</button>
+            </div>
+            
+            <button class="continue-btn" id="continueBtn" disabled aria-disabled="true">Lanjutkan ke WhatsApp</button>
+            <p class="disclaimer">Dengan mengklik tombol ini, Anda akan diarahkan ke WhatsApp untuk konfirmasi pesanan dan proses yang lebih aman.</p>
+        </div>
+    </div>
+
+    <div class="theme-toggle" id="themeToggle" role="button" tabindex="0" aria-label="Toggle tema gelap atau terang">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <div class="bottom-nav" role="navigation" aria-label="Navigasi Bawah">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="search.html" class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>Cari</span>
+        </a>
+        <a href="keranjang.html" class="nav-item active" aria-current="page">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Keranjang</span>
+            <span class="cart-badge" id="cartBadge">0</span>
+        </a>
+        <a href="profil.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Profil</span>
+        </a>
+    </div>
+
+    <script src="js/config.js"></script> 
+    <script>
+        // Pastikan CONFIG tersedia dari config.js
+        if (typeof CONFIG === 'undefined') {
+            console.error('ERROR: CONFIG object not found. Ensure config.js is loaded correctly.');
+            // Default minimal jika CONFIG gagal
+            const CONFIG = {
+                nama: "Zass Desuta",
+                tentang: "Platform digital untuk produk digital.",
+                alamat: "-",
+                sosial_media: { whatsapp: "", email: "", youtube: "", tiktok: "", telegram: "" },
+                payment: { dana: "-", gopay: "-", ovo: "-", qris: "-" }
+            };
+        }
+        
+        // Konstanta DOM Elements
+        const DOMElements = {
+            aboutText: document.getElementById("aboutText"),
+            alamat: document.getElementById("alamat"),
+            wa: document.getElementById("wa"),
+            email: document.getElementById("email"),
+            ytLink: document.getElementById("ytLink"),
+            tiktokLink: document.getElementById("tiktokLink"),
+            waLink: document.getElementById("waLink"),
+            telegramLink: document.getElementById("telegramLink"),
+            copyright: document.querySelector(".copyright p"),
+            
+            cartItemsContainer: document.getElementById('cartItems'),
+            subtotalElement: document.getElementById('subtotal'),
+            totalElement: document.getElementById('total'),
+            checkoutBtn: document.getElementById('checkoutBtn'),
+            paymentModal: document.getElementById('paymentModal'),
+            closeModal: document.getElementById('closeModal'),
+            themeToggle: document.getElementById('themeToggle'),
+            cartBadge: document.getElementById('cartBadge'),
+            searchInput: document.getElementById('searchInput'),
+            paymentOptions: document.querySelectorAll('.payment-option'),
+            selectedPaymentDetails: document.getElementById('selectedPaymentDetails'),
+            selectedMethodTitle: document.getElementById('selectedMethodTitle'),
+            paymentNumber: document.getElementById('paymentNumber'),
+            paymentAmount: document.getElementById('paymentAmount'),
+            copyBtn: document.getElementById('copyBtn'),
+            continueBtn: document.getElementById('continueBtn'),
+            invoiceId: document.getElementById('invoiceId'),
+            invoiceDate: document.getElementById('invoiceDate'),
+        };
+
+        // State Variables
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let selectedPaymentMethod = null;
+        let filteredCart = [];
+
+        // --- Helper Functions ---
+
+        // Load CONFIG data to DOM
+        function loadConfig() {
+            DOMElements.aboutText.innerText = CONFIG.tentang;
+            DOMElements.alamat.innerText = CONFIG.alamat;
+            DOMElements.wa.innerText = CONFIG.sosial_media.whatsapp;
+            DOMElements.email.innerText = CONFIG.sosial_media.email;
+            
+            // Set payment numbers
+            DOMElements.paymentOptions.forEach(option => {
+                const method = option.getAttribute('data-method');
+                if (CONFIG.payment[method]) {
+                    option.setAttribute('data-number', CONFIG.payment[method]);
+                }
+            });
+
+            // Set social media links
+            DOMElements.ytLink.href = `https://youtube.com/${CONFIG.sosial_media.youtube}`;
+            DOMElements.tiktokLink.href = `https://tiktok.com/@${CONFIG.sosial_media.tiktok}`;
+            DOMElements.waLink.href = `https://wa.me/${CONFIG.sosial_media.whatsapp}`;
+            DOMElements.telegramLink.href = `https://t.me/${CONFIG.sosial_media.telegram}`;
+            
+            // Set copyright year and name
+            DOMElements.copyright.innerText =
+                `© ${new Date().getFullYear()} ${CONFIG.nama}. All Rights Reserved.`;
+        }
+        
+        // Format price to Rupiah
+        function formatRupiah(number) {
+            return `Rp ${number.toLocaleString('id-ID')}`;
+        }
+
+        // --- Cart Logic ---
+
+        // Render cart items
+        function renderCartItems() {
+            const itemsToRender = DOMElements.searchInput.value.trim() !== '' ? filteredCart : cart;
+            
+            if (itemsToRender.length === 0) {
+                DOMElements.cartItemsContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3>Keranjang belanja kosong</h3>
+                        <p>Silakan tambahkan produk ke keranjang Anda</p>
+                    </div>
+                `;
+                DOMElements.checkoutBtn.disabled = true;
+                DOMElements.checkoutBtn.setAttribute('aria-disabled', 'true');
+                DOMElements.checkoutBtn.style.opacity = '0.6';
+                return;
+            }
+            
+            DOMElements.checkoutBtn.disabled = false;
+            DOMElements.checkoutBtn.setAttribute('aria-disabled', 'false');
+            DOMElements.checkoutBtn.style.opacity = '1';
+            
+            let cartHTML = itemsToRender.map(item => `
+                <div class="cart-item" data-id="${item.productId}" data-variant="${item.variantName}">
+                    <div class="cart-item-image">
+                        <i class="${item.icon}"></i>
+                    </div>
+                    <div class="cart-item-info">
+                        <h3 class="cart-item-name">${item.productName}</h3>
+                        <p class="cart-item-variant">Varian: ${item.variantName}</p>
+                        <p class="cart-item-price">${formatRupiah(item.price)}</p>
+                    </div>
+                    <div class="cart-item-controls">
+                        <div class="quantity-control">
+                            <button class="quantity-btn decrease-btn" data-id="${item.productId}" data-variant="${item.variantName}" aria-label="Kurangi kuantitas ${item.productName} varian ${item.variantName}">-</button>
+                            <input type="number" class="quantity-input" value="${item.quantity}" min="1" data-id="${item.productId}" data-variant="${item.variantName}" aria-label="Kuantitas ${item.productName} varian ${item.variantName}">
+                            <button class="quantity-btn increase-btn" data-id="${item.productId}" data-variant="${item.variantName}" aria-label="Tambah kuantitas ${item.productName} varian ${item.variantName}">+</button>
+                        </div>
+                        <button class="remove-item" data-id="${item.productId}" data-variant="${item.variantName}" aria-label="Hapus ${item.productName} dari keranjang">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            DOMElements.cartItemsContainer.innerHTML = cartHTML;
+            updateCartSummary();
+        }
+
+        // Update cart summary
+        function updateCartSummary() {
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            DOMElements.subtotalElement.textContent = formatRupiah(subtotal);
+            DOMElements.totalElement.textContent = formatRupiah(subtotal);
+            DOMElements.paymentAmount.textContent = formatRupiah(subtotal);
+            
+            // Disable checkout if subtotal is 0
+            if (subtotal === 0) {
+                DOMElements.checkoutBtn.disabled = true;
+                DOMElements.checkoutBtn.setAttribute('aria-disabled', 'true');
+                DOMElements.checkoutBtn.style.opacity = '0.6';
+            }
+        }
+
+        // Update cart badge
+        function updateCartBadge() {
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            DOMElements.cartBadge.textContent = totalItems;
+        }
+        
+        // Update item quantity
+        function updateQuantity(productId, variantName, change, setValue = null) {
+            // Mengubah ke string untuk konsistensi pencarian
+            const pId = String(productId); 
+            const itemIndex = cart.findIndex(item => 
+                String(item.productId) === pId && item.variantName === variantName
+            );
+            
+            if (itemIndex >= 0) {
+                let newQuantity = setValue !== null ? setValue : cart[itemIndex].quantity + change;
+                
+                // Pastikan kuantitas minimal 1
+                if (newQuantity < 1) {
+                    newQuantity = 1;
+                }
+                
+                cart[itemIndex].quantity = newQuantity;
+                
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartBadge();
+                renderCartItems();
+            }
+        }
+
+        // Remove item from cart
+        function removeItem(productId, variantName) {
+            const pId = String(productId);
+            // Filter keranjang utama
+            cart = cart.filter(item => 
+                !(String(item.productId) === pId && item.variantName === variantName)
+            );
+            
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartBadge();
+            
+            // Jika pencarian aktif, perbarui juga keranjang terfilter
+            if (DOMElements.searchInput.value.trim() !== '') {
+                filteredCart = filteredCart.filter(item => 
+                    !(String(item.productId) === pId && item.variantName === variantName)
+                );
+            }
+            
+            renderCartItems(); // Render ulang
+        }
+
+        // Handle search
+        function handleSearch() {
+            const searchTerm = DOMElements.searchInput.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredCart = [];
+            } else {
+                filteredCart = cart.filter(item => 
+                    item.productName.toLowerCase().includes(searchTerm) || 
+                    item.variantName.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            renderCartItems();
+        }
+
+
+        // --- Payment Modal Logic ---
+
+        // Open payment modal
+        function openPaymentModal() {
+            if (cart.length === 0) return;
+            
+            // Generate invoice ID dan tanggal
+            const date = new Date();
+            DOMElements.invoiceId.textContent = 'ZPAY-' + Math.floor(100000 + Math.random() * 900000);
+            DOMElements.invoiceDate.textContent = date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            DOMElements.paymentModal.style.display = 'block';
+            DOMElements.paymentModal.focus(); // Fokus ke modal untuk aksesibilitas
+        }
+
+        // Close payment modal
+        function closePaymentModal() {
+            DOMElements.paymentModal.style.display = 'none';
+            selectedPaymentMethod = null;
+            DOMElements.selectedPaymentDetails.style.display = 'none';
+            DOMElements.continueBtn.disabled = true;
+            DOMElements.continueBtn.setAttribute('aria-disabled', 'true');
+            
+            // Reset selected payment method UI
+            DOMElements.paymentOptions.forEach(option => {
+                option.classList.remove('selected');
+                option.setAttribute('aria-checked', 'false');
+            });
+        }
+
+        // Select payment method
+        function selectPaymentMethod(e) {
+            const option = e.currentTarget;
+            
+            // Hapus kelas 'selected' dan aria-checked dari semua opsi
+            DOMElements.paymentOptions.forEach(opt => {
+                opt.classList.remove('selected');
+                opt.setAttribute('aria-checked', 'false');
+            });
+            
+            // Tambahkan kelas 'selected' dan aria-checked ke opsi yang diklik
+            option.classList.add('selected');
+            option.setAttribute('aria-checked', 'true');
+            
+            // Set selected payment method
+            selectedPaymentMethod = {
+                method: option.getAttribute('data-method'),
+                name: option.querySelector('.payment-name').textContent,
+                number: option.getAttribute('data-number')
+            };
+            
+            // Update payment details
+            DOMElements.selectedMethodTitle.textContent = selectedPaymentMethod.name;
+            DOMElements.paymentNumber.textContent = selectedPaymentMethod.number;
+            DOMElements.selectedPaymentDetails.style.display = 'block';
+            DOMElements.continueBtn.disabled = false;
+            DOMElements.continueBtn.setAttribute('aria-disabled', 'false');
+        }
+
+        // Copy payment number
+        function copyPaymentNumber() {
+            if (!selectedPaymentMethod || !selectedPaymentMethod.number) return;
+            
+            navigator.clipboard.writeText(selectedPaymentMethod.number)
+                .then(() => {
+                    DOMElements.copyBtn.textContent = 'Tersalin!';
+                    DOMElements.copyBtn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        DOMElements.copyBtn.textContent = 'Salin Nomor Pembayaran';
+                        DOMElements.copyBtn.classList.remove('copied');
+                    }, 2000);
+                })
+                .catch(err => {
+                    console.error('Gagal menyalin teks: ', err);
+                    alert('Gagal menyalin nomor pembayaran. Silakan salin secara manual.');
+                });
+        }
+
+        // Continue to WhatsApp
+        function continueToWhatsApp() {
+            if (!selectedPaymentMethod) return;
+            
+            // Format order details for WhatsApp message
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            
+            // Format item list
+            const orderDetails = cart.map(item => 
+                `${item.productName} (${item.variantName}) - ${item.quantity} x ${formatRupiah(item.price)}`
+            ).join('\n'); // Gunakan \n (newline)
+
+            // Encode message for URL
+            const message = encodeURIComponent(
+                `Halo, saya ingin memesan produk dengan detail berikut:\n\n` +
+                `${orderDetails}\n\n` +
+                `Total: ${formatRupiah(subtotal)}\n` +
+                `Metode Pembayaran: ${selectedPaymentMethod.name.toUpperCase()}\n` +
+                `Invoice: ${DOMElements.invoiceId.textContent}\n\n` +
+                `*[Pesan ini dikirimkan setelah saya melakukan pembayaran ke ${selectedPaymentMethod.number}. Mohon konfirmasi pesanan saya.]*`
+            );
+            
+            // Open WhatsApp with pre-filled message
+            window.open(`https://wa.me/${CONFIG.sosial_media.whatsapp}?text=${message}`, '_blank');
+            
+            // Close modal
+            closePaymentModal();
+        }
+
+
+        // --- Theme Toggle Logic ---
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update icon
+            DOMElements.themeToggle.innerHTML = newTheme === 'dark' ? 
+                '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+        }
+
+
+        // --- Event Listeners Setup ---
+        function setupEventListeners() {
+            // Theme toggle
+            DOMElements.themeToggle.addEventListener('click', toggleTheme);
+            
+            // Checkout button
+            DOMElements.checkoutBtn.addEventListener('click', openPaymentModal);
+            
+            // Close modal
+            DOMElements.closeModal.addEventListener('click', closePaymentModal);
+            
+            // Search functionality
+            DOMElements.searchInput.addEventListener('input', handleSearch);
+            
+            // Payment method selection
+            DOMElements.paymentOptions.forEach(option => {
+                option.addEventListener('click', selectPaymentMethod);
+                option.addEventListener('keypress', (e) => {
+                    // Membuat elemen non-input role="radio" dapat diakses dengan Enter/Space
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectPaymentMethod(e);
+                    }
+                });
+            });
+            
+            // Copy payment number
+            DOMElements.copyBtn.addEventListener('click', copyPaymentNumber);
+            
+            // Continue to WhatsApp
+            DOMElements.continueBtn.addEventListener('click', continueToWhatsApp);
+            
+            // Delegate events for dynamic elements
+            document.addEventListener('click', function(e) {
+                const target = e.target;
+                
+                // Mendapatkan ID dan Varian dari tombol yang relevan
+                const btn = target.closest('.decrease-btn') || target.closest('.increase-btn') || target.closest('.remove-item');
+                if (!btn) return;
+                
+                const id = btn.getAttribute('data-id');
+                const variant = btn.getAttribute('data-variant');
+
+                // Decrease quantity
+                if (btn.classList.contains('decrease-btn')) {
+                    updateQuantity(id, variant, -1);
+                }
+                
+                // Increase quantity
+                else if (btn.classList.contains('increase-btn')) {
+                    updateQuantity(id, variant, 1);
+                }
+                
+                // Remove item
+                else if (btn.classList.contains('remove-item')) {
+                    removeItem(id, variant);
+                }
+            });
+            
+            // Input quantity change
+            document.addEventListener('change', function(e) {
+                if (e.target.classList.contains('quantity-input')) {
+                    const id = e.target.getAttribute('data-id');
+                    const variant = e.target.getAttribute('data-variant');
+                    const newQuantity = parseInt(e.target.value);
+                    
+                    if (isNaN(newQuantity) || newQuantity < 1) {
+                        e.target.value = 1;
+                        updateQuantity(id, variant, 0, 1);
+                    } else {
+                        updateQuantity(id, variant, 0, newQuantity);
+                    }
+                }
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && DOMElements.paymentModal.style.display === 'block') {
+                    closePaymentModal();
+                }
+            });
+        }
+
+        // --- Initialization ---
+
+        function init() {
+            loadConfig();
+            
+            // Check for saved theme
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                DOMElements.themeToggle.innerHTML = savedTheme === 'dark' ? 
+                    '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            }
+
+            updateCartBadge();
+            renderCartItems();
+            setupEventListeners();
+        }
+
+        // Initialize the page on DOM load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
